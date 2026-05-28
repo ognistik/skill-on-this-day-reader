@@ -1,4 +1,0 @@
-interface:
-  display_name: "On This Day Reader"
-  short_description: "Analyze Day One memories into Reader"
-  default_prompt: "Use the on-this-day-reader workflow to analyze today's Day One On This Day entries and save the result to Reader."

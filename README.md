@@ -175,7 +175,6 @@ Your raw Day One export is intended to be read directly by the AI during the run
 ├── .gitignore
 └── on-this-day-reader/
     ├── SKILL.md
-    ├── agents/
     ├── config.json
     ├── references/
     └── scripts/

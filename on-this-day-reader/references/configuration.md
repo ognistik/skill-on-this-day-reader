@@ -98,7 +98,7 @@ python3 scripts/configure.py note off
 Set the note URL template:
 
 ```bash
-python3 scripts/configure.py note-url "bear://x-callback-url/create?text={analysis}&tags=on-this-day"
+python3 scripts/configure.py note-url "bear://x-callback-url/create?title={title}&text={analysis}&tags=on-this-day"
 ```
 
 Reset the entire config to defaults:
@@ -144,7 +144,7 @@ The assistant should use `scripts/configure.py` for these changes. It should not
   },
   "note": {
     "enabled": false,
-    "url_template": "bear://x-callback-url/create?text={analysis}",
+    "url_template": "bear://x-callback-url/create?title={title}&text={analysis}",
     "open_in_background": true
   }
 }
@@ -183,7 +183,7 @@ The template is app-agnostic. These placeholders are URL-encoded before substitu
 Bear example:
 
 ```json
-"url_template": "bear://x-callback-url/create?text={analysis}&tags=on-this-day"
+"url_template": "bear://x-callback-url/create?title={title}&text={analysis}&tags=on-this-day"
 ```
 
 Apps that do not support tags can omit tag-related URL parameters entirely.

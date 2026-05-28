@@ -126,6 +126,38 @@ You can also use a one-off environment override:
 ON_THIS_DAY_DRY_RUN=1 python3 scripts/save_reader_document.py /path/to/on-this-day-analysis.md
 ```
 
+## Optional Note URL
+
+The skill can also open a note URL after the Reader document is created. This is optional and disabled by default.
+
+The default `url_template` is meant for Bear:
+
+```json
+"url_template": "bear://x-callback-url/create?title={title}&text={analysis}"
+```
+
+The feature is not Bear-specific, though. You can use any app URL or callback URL that accepts text in the URL, as long as the receiving app can handle the amount of text being sent.
+
+Available placeholders:
+
+- `{analysis}`: full Markdown analysis
+- `{title}`: generated Reader title
+- `{date}`: `MM-DD` date label
+
+The script URL-encodes those values before opening the URL.
+
+Enable note creation:
+
+```bash
+python3 scripts/configure.py note on
+```
+
+Set a custom URL template:
+
+```bash
+python3 scripts/configure.py note-url "bear://x-callback-url/create?title={title}&text={analysis}&tags=on-this-day"
+```
+
 ## Privacy Notes
 
 This skill runs locally, reads your local Day One database, and sends only the final generated analysis to Readwise Reader when saving is enabled.

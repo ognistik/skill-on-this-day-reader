@@ -11,7 +11,7 @@
   },
   "note": {
     "enabled": false,
-    "url_template": "bear://x-callback-url/create?text={analysis}",
+    "url_template": "bear://x-callback-url/create?title={title}&text={analysis}",
     "open_in_background": true
   }
 }

@@ -1,0 +1,20 @@
+.DS_Store
+*.log
+.env
+.env.*
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local run output
+tmp/
+dist/
+on-this-day-analysis.md
+export.md
+on-this-day.md
+
+# Local editor/project files
+.vscode/
+.idea/

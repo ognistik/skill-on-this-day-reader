@@ -1,0 +1,17 @@
+{
+  "dayone": {
+    "db_path": "~/Library/Group Containers/5U8NS4GX82.dayoneapp2/Data/Documents/DayOne.sqlite",
+    "exclude_journals": [],
+    "exclude_tags": [],
+    "sort": "asc"
+  },
+  "reader": {
+    "delete_files_after_save": true,
+    "dry_run": false
+  },
+  "note": {
+    "enabled": false,
+    "url_template": "bear://x-callback-url/create?text={analysis}",
+    "open_in_background": true
+  }
+}

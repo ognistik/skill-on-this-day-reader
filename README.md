@@ -182,4 +182,4 @@ Your raw Day One export is intended to be read directly by the AI during the run
 
 ## License
 
-No license has been added yet. Add one before publishing if you want others to reuse, modify, or redistribute this skill under explicit terms.
+MIT. Day One and Readwise are trademarks of their respective owners. This project is unofficial and not affiliated with Day One or Readwise.

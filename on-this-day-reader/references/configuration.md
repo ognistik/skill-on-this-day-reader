@@ -107,10 +107,10 @@ Reset the entire config to defaults:
 python3 scripts/configure.py reset
 ```
 
-Manual config path:
+Config path:
 
 ```text
-~/.codex/skills/on-this-day-reader/config.json
+on-this-day-reader/config.json
 ```
 
 ## Editing With AI

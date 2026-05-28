@@ -1,18 +1,18 @@
-# On This Day Reader Skill
+# On This Day Reader
 
-A Codex skill for turning Day One's "On This Day" memories into a thoughtful Markdown analysis and saving that analysis to Readwise Reader.
+A portable local workflow for turning Day One's "On This Day" memories into a thoughtful Markdown analysis and saving that analysis to Readwise Reader.
 
-This repo is intentionally shaped as a wrapper around the installable skill. The folder you install is:
+This repo is intentionally shaped as a wrapper around the portable workflow folder. The folder you use is:
 
 ```text
 on-this-day-reader/
 ```
 
-Do not copy the whole repository into your skills folder. Copy only the `on-this-day-reader` folder.
+Do not treat the whole repository as the workflow folder. Use only the `on-this-day-reader` folder.
 
 ## What It Does
 
-The skill reads entries for today's calendar date across previous years from your local Day One database, asks the AI to analyze those entries as a personal-history review, writes the result as Markdown, and saves it to Reader.
+The workflow reads entries for today's calendar date across previous years from your local Day One database, asks the AI to analyze those entries as a personal-history review, writes the result as Markdown, and saves it to Reader.
 
 The workflow is designed to avoid the MCP route. Instead of relying on Day One MCP or Readwise MCP tools, it uses small local scripts:
 
@@ -49,38 +49,41 @@ You can also authenticate with:
 readwise login-with-token
 ```
 
-## Install In Codex
+## Use It With An AI Assistant
 
-Clone or download this repository, then copy only the skill folder:
-
-```bash
-mkdir -p ~/.codex/skills
-cp -R on-this-day-reader ~/.codex/skills/
-```
-
-After installation, the skill should live here:
+Clone or download this repository, then give your AI assistant access to the workflow folder:
 
 ```text
-~/.codex/skills/on-this-day-reader/SKILL.md
+on-this-day-reader/
 ```
 
-Then ask Codex:
+Point the assistant at:
 
 ```text
-Use $on-this-day-reader to analyze today's Day One On This Day entries and save the result to Reader.
+on-this-day-reader/SKILL.md
+```
+
+Then ask:
+
+```text
+Use the on-this-day-reader workflow to analyze today's Day One On This Day entries and save the result to Reader.
 ```
 
 For a specific calendar date:
 
 ```text
-Use $on-this-day-reader for 05-26 and save it to Reader.
+Use the on-this-day-reader workflow for 05-26 and save it to Reader.
 ```
 
-## Using With Other AI Apps
+## Installing Into Tool-Specific Skill Folders
 
-This was built as a Codex skill, but the core workflow is plain files and scripts. In another local AI app, point the assistant at `on-this-day-reader/SKILL.md` and ask it to follow the instructions.
+Some AI tools support reusable local instruction folders, often called skills, agents, or workflows. If your tool has that kind of feature, install only this folder:
 
-The important rule is the same: install or reference the `on-this-day-reader` folder itself, not this entire repository.
+```text
+on-this-day-reader/
+```
+
+Do not install the repository root unless your tool explicitly expects the README and workflow folder together.
 
 ## Configuration
 
@@ -128,7 +131,7 @@ ON_THIS_DAY_DRY_RUN=1 python3 scripts/save_reader_document.py /path/to/on-this-d
 
 ## Optional Note URL
 
-The skill can also open a note URL after the Reader document is created. This is optional and disabled by default.
+The workflow can also open a note URL after the Reader document is created. This is optional and disabled by default.
 
 The default `url_template` is meant for Bear:
 
@@ -160,9 +163,9 @@ python3 scripts/configure.py note-url "bear://x-callback-url/create?title={title
 
 ## Privacy Notes
 
-This skill runs locally, reads your local Day One database, and sends only the final generated analysis to Readwise Reader when saving is enabled.
+This workflow runs locally, reads your local Day One database, and sends only the final generated analysis to Readwise Reader when saving is enabled.
 
-Your raw Day One export is intended to be read directly by the AI during the run, not saved as a separate handoff file. The skill instructions explicitly avoid persisting duplicate raw export Markdown files.
+Your raw Day One export is intended to be read directly by the AI during the run, not saved as a separate handoff file. The workflow instructions explicitly avoid persisting duplicate raw export Markdown files.
 
 ## Repository Layout
 

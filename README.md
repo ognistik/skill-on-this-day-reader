@@ -262,6 +262,10 @@ Your raw Day One export is intended to be read directly by the AI during the run
     └── scripts/
 ```
 
+## Support
+
+If this workflow is useful in your journal or reading practice, I'd be grateful if you [Buy me a coffee](https://buymeacoffee.com/afadingthought/) or support the project through [PayPal](https://paypal.me/obergfilms).
+
 ## License
 
 MIT. Day One and Readwise are trademarks of their respective owners. This project is unofficial and not affiliated with Day One or Readwise.

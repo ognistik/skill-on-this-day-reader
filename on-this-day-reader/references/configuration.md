@@ -31,27 +31,27 @@ python3 scripts/configure.py exclude-journal add "Instagram" "Work Journal"
 Exclude one or more tags:
 
 ```bash
-python3 scripts/configure.py exclude-tag add ".g tracker" ".a filmreviews"
+python3 scripts/configure.py exclude-tag add "tag 1" "tag 2"
 ```
 
 Comma-separated values also work:
 
 ```bash
-python3 scripts/configure.py exclude-tag add ".g tracker,.a filmreviews"
+python3 scripts/configure.py exclude-tag add "tag 1,tag 2"
 ```
 
 Remove exclusions:
 
 ```bash
 python3 scripts/configure.py exclude-journal remove "Instagram"
-python3 scripts/configure.py exclude-tag remove ".g tracker" ".a filmreviews"
+python3 scripts/configure.py exclude-tag remove "tag 1" "tag 2"
 ```
 
 Replace the full exclusion list:
 
 ```bash
 python3 scripts/configure.py exclude-journal set "Instagram" "Work Journal"
-python3 scripts/configure.py exclude-tag set ".g tracker" ".a filmreviews"
+python3 scripts/configure.py exclude-tag set "tag 1" "tag 2"
 ```
 
 Clear exclusions:
@@ -107,10 +107,10 @@ Reset the entire config to defaults:
 python3 scripts/configure.py reset
 ```
 
-Config path:
+Manual config path:
 
 ```text
-on-this-day-reader/config.json
+~/.codex/skills/on-this-day-reader/config.json
 ```
 
 ## Editing With AI
@@ -118,11 +118,10 @@ on-this-day-reader/config.json
 You can ask an AI assistant to edit the configuration for you. Use direct requests like:
 
 - "Use the on-this-day-reader configure script to exclude the Instagram journal."
-- "Use the configure script to add `.g tracker` and `.a filmreviews` to the excluded Day One tags."
+- "Use the configure script to add `books` and `articles` to the excluded Day One tags."
 - "Use the configure script to turn on dry run for the on-this-day-reader skill."
 - "Use the configure script to turn off dry run for the on-this-day-reader skill."
 - "Use the configure script to enable Bear note creation for the on-this-day analysis."
-- "Use the configure script to set the Bear note URL to create notes tagged `on-this-day`."
 - "Use the configure script to change the export sort order to newest first."
 - "Use the configure script to show me the current on-this-day-reader configuration."
 
@@ -134,8 +133,8 @@ The assistant should use `scripts/configure.py` for these changes. It should not
 {
   "dayone": {
     "db_path": "~/Library/Group Containers/5U8NS4GX82.dayoneapp2/Data/Documents/DayOne.sqlite",
-    "exclude_journals": ["Instagram"],
-    "exclude_tags": [".a filmreviews", ".g tracker"],
+    "exclude_journals": ["private"],
+    "exclude_tags": ["movies", "books"],
     "sort": "asc"
   },
   "reader": {

@@ -1,14 +1,38 @@
 # On This Day Reader
 
-A portable local workflow for turning Day One's "On This Day" memories into a thoughtful Markdown analysis and saving that analysis to Readwise Reader.
+A portable local workflow packaged as a skill, for turning Day One's "On This Day" memories into a thoughtful Markdown analysis and saving that analysis to Readwise Reader.
 
-This repo is intentionally shaped as a wrapper around the portable workflow folder. The folder you use is:
+The workflow folder you give to your AI assistant is:
 
 ```text
 on-this-day-reader/
 ```
 
-Do not treat the whole repository as the workflow folder. Use only the `on-this-day-reader` folder.
+The easiest way to get it is the latest release zip:
+
+[Download on-this-day-reader.zip](https://github.com/ognistik/skill-on-this-day-reader/releases/latest/download/on-this-day-reader.zip)
+
+After downloading, unzip it. You should have a folder named `on-this-day-reader`.
+
+## Quick Start
+
+If you already have Day One, Python 3, and the Readwise CLI set up:
+
+1. Download the latest `on-this-day-reader.zip`.
+2. Unzip it.
+3. Give your AI assistant access to the `on-this-day-reader/` folder.
+4. Point the assistant at `on-this-day-reader/SKILL.md`.
+5. Ask:
+
+```text
+Use the On This Day to Reader workflow to analyze today's Day One On This Day entries and save the result to Reader.
+```
+
+For a specific calendar date:
+
+```text
+Use the On This Day to Reader workflow for 05-26 and save it to Reader.
+```
 
 ## What It Does
 
@@ -32,58 +56,112 @@ The Reader save script creates a new Reader document through the Readwise CLI an
 ## Requirements
 
 - macOS
-- Day One installed and synced locally
+- Day One installed, opened at least once, and synced locally
 - Python 3
+- Node.js and npm, used to install the Readwise CLI
 - Readwise CLI installed and authenticated
 
-Install and authenticate the Readwise CLI:
+If you are comfortable with the command line, the short version is:
 
 ```bash
+brew install python node
 npm install -g @readwise/cli
 readwise login
 ```
 
-You can also authenticate with:
+If those commands are unfamiliar, the next section walks through them more slowly.
+
+## Beginner Setup
+
+This workflow is local, but it does need a few command-line tools. On a Mac, the simplest way to install them is usually [Homebrew](https://brew.sh/), a package manager for macOS.
+
+### 1. Install Homebrew
+
+Open Terminal on your Mac. Then follow the install instructions on the [Homebrew homepage](https://brew.sh/). Homebrew provides a one-line command you can copy and paste into Terminal.
+
+When Homebrew finishes, close and reopen Terminal. Then check that it works:
 
 ```bash
-readwise login-with-token
+brew --version
 ```
 
-## Use It With An AI Assistant
+### 2. Install Python 3
 
-Clone or download this repository, then give your AI assistant access to the workflow folder:
+Install Python with Homebrew:
+
+```bash
+brew install python
+```
+
+Check that Python is available:
+
+```bash
+python3 --version
+```
+
+This workflow only uses Python's standard library. You do not need to install extra Python packages.
+
+### 3. Install Node.js and npm
+
+The Readwise CLI is installed with npm, which comes with Node.js.
+
+```bash
+brew install node
+```
+
+Check that npm is available:
+
+```bash
+npm --version
+```
+
+### 4. Install and authenticate the Readwise CLI
+
+Install the Readwise CLI:
+
+```bash
+npm install -g @readwise/cli
+```
+
+Then connect it to your Readwise account:
+
+```bash
+readwise login
+```
+
+The official Readwise CLI page is here: [readwise.io/cli](https://readwise.io/cli).
+
+### 5. Make sure Day One is synced locally
+
+Open the Day One Mac app and make sure the journal entries you want are available on this Mac. The exporter reads from Day One's local database, so entries that have not synced to this computer will not appear.
+
+## Download the Skill
+
+For most people, use the latest release zip
+
+[Download on-this-day-reader.zip](https://github.com/ognistik/skill-on-this-day-reader/releases/latest/download/on-this-day-reader.zip)
+
+Otherwise, you can directly [get the folder from this repo](https://github.com/ognistik/skill-on-this-day-reader/tree/main/on-this-day-reader).
+
+## MCP Alternative
+
+This workflow intentionally does not use MCP during the normal run. It uses local scripts plus the Readwise CLI because that keeps the steps explicit and portable.
+
+There is another way to build a similar workflow: use the official MCP servers and instruct your AI assistant to connect Day One and Readwise directly.
+
+Useful links:
+
+- Day One MCP server guide: [dayoneapp.com/guides/day-one-for-mac/day-one-mcp-server](https://dayoneapp.com/guides/day-one-for-mac/day-one-mcp-server/)
+- Readwise MCP: [readwise.io/mcp](https://readwise.io/mcp)
+- Readwise CLI: [readwise.io/cli](https://readwise.io/cli)
+
+If you go the MCP route, you can ask Codex, Claude, or another MCP-capable assistant something like:
 
 ```text
-on-this-day-reader/
+Use the Day One MCP server to find my On This Day entries for today, write a reflective personal-history analysis, and save the finished analysis to Readwise Reader using the Readwise MCP server.
 ```
 
-Point the assistant at:
-
-```text
-on-this-day-reader/SKILL.md
-```
-
-Then ask:
-
-```text
-Use the on-this-day-reader workflow to analyze today's Day One On This Day entries and save the result to Reader.
-```
-
-For a specific calendar date:
-
-```text
-Use the on-this-day-reader workflow for 05-26 and save it to Reader.
-```
-
-## Installing Into Tool-Specific Skill Folders
-
-Some AI tools support reusable local instruction folders, often called skills, agents, or workflows. If your tool has that kind of feature, install only this folder:
-
-```text
-on-this-day-reader/
-```
-
-Do not install the repository root unless your tool explicitly expects the README and workflow folder together.
+The MCP route may be more natural if your assistant already has both MCP servers configured. This skill is useful when you want a reusable local workflow that does not depend on the assistant choosing the right MCP calls every time.
 
 ## Configuration
 
@@ -93,7 +171,25 @@ Configuration lives in:
 on-this-day-reader/config.json
 ```
 
-Use the configure script from inside the skill folder:
+You do not have to edit this file by hand. Once your AI assistant has access to the skill folder, you can ask it to read the configuration instructions and make the change for you.
+
+For example:
+
+```text
+Use the On This Day to Reader skill configuration instructions to exclude my Work Journal.
+```
+
+```text
+Use the On This Day to Reader skill configuration instructions to turn on dry run.
+```
+
+The instructions the assistant should read are here:
+
+```text
+on-this-day-reader/references/configuration.md
+```
+
+If you prefer to configure it yourself, use the configure script from inside the skill folder:
 
 ```bash
 python3 scripts/configure.py show
@@ -113,20 +209,6 @@ More configuration details are in:
 
 ```text
 on-this-day-reader/references/configuration.md
-```
-
-## Dry Run
-
-To test without writing to Reader:
-
-```bash
-python3 scripts/configure.py dry-run on
-```
-
-You can also use a one-off environment override:
-
-```bash
-ON_THIS_DAY_DRY_RUN=1 python3 scripts/save_reader_document.py /path/to/on-this-day-analysis.md
 ```
 
 ## Optional Note URL

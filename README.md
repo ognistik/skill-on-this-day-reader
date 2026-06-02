@@ -1,6 +1,6 @@
 # On This Day Reader
 
-A portable local workflow packaged as a skill, for turning Day One's "On This Day" memories into a thoughtful Markdown analysis and saving that analysis to Readwise Reader.
+A portable local workflow packaged as a skill, for turning Day One's "On This Day" memories into a thoughtful Markdown analysis and saving that analysis to [Readwise Reader.](https://readwise.io/aft/)
 
 The workflow folder you give to your AI assistant is:
 

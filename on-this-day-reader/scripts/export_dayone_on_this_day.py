@@ -10,6 +10,7 @@ import os
 import re
 import sqlite3
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -83,18 +84,60 @@ def quote_identifier(identifier: str) -> str:
     return f'"{identifier}"'
 
 
-def get_tag_join_column(conn: sqlite3.Connection) -> str:
-    columns = [row["name"] for row in conn.execute("PRAGMA table_info(Z_17TAGS)")]
-    tag_columns = [
-        column
-        for column in columns
-        if column != "Z_17ENTRIES" and re.fullmatch(r"Z_\d+TAGS1", column)
-    ]
-    if len(tag_columns) != 1:
+@dataclass(frozen=True)
+class TagJoinSchema:
+    table: str
+    entry_column: str
+    tag_column: str
+
+
+TAG_ENTRY_COLUMN = re.compile(r"Z_\d+ENTRIES\d*")
+TAG_COLUMN = re.compile(r"Z_\d+TAGS\d*")
+
+
+def get_tag_join_schema(conn: sqlite3.Connection) -> TagJoinSchema:
+    """Find Day One's generated entry-to-tag relation table.
+
+    Day One uses Core Data's generated ``Z_<number>`` identifiers for
+    relation tables and columns. Those numbers can change when Day One's
+    model changes, while the logical entry/tag column shapes remain stable.
+    Discover the relation by its shape instead of hard-coding one historical
+    generated name.
+    """
+
+    candidates: list[TagJoinSchema] = []
+    inspected: list[tuple[str, list[str]]] = []
+    table_rows = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table'"
+    ).fetchall()
+    for row in table_rows:
+        table = row["name"]
+        columns = [
+            column["name"]
+            for column in conn.execute(f"PRAGMA table_info({quote_identifier(table)})")
+        ]
+        entry_columns = [
+            column for column in columns if TAG_ENTRY_COLUMN.fullmatch(column)
+        ]
+        tag_columns = [column for column in columns if TAG_COLUMN.fullmatch(column)]
+        if entry_columns or tag_columns:
+            inspected.append((table, columns))
+        if len(entry_columns) == 1 and len(tag_columns) == 1:
+            candidates.append(
+                TagJoinSchema(
+                    table=table,
+                    entry_column=entry_columns[0],
+                    tag_column=tag_columns[0],
+                )
+            )
+
+    if len(candidates) != 1:
+        details = "; ".join(f"{table}: {columns}" for table, columns in inspected)
         raise RuntimeError(
-            f"could not find Day One tag join column in Z_17TAGS: {columns}"
+            "could not uniquely identify Day One entry-to-tag relation table "
+            f"among generated tag tables: {details or '[]'}"
         )
-    return quote_identifier(tag_columns[0])
+    return candidates[0]
 
 
 def build_in_clause(column: str, values: list[str], negate: bool = False) -> tuple[str, list[str]]:
@@ -114,13 +157,18 @@ def clean_body(text: str | None) -> str:
     return text
 
 
-def fetch_tags(conn: sqlite3.Connection, entry_pk: int, tag_join_column: str) -> list[str]:
+def fetch_tags(
+    conn: sqlite3.Connection, entry_pk: int, tag_join: TagJoinSchema
+) -> list[str]:
+    tag_table = quote_identifier(tag_join.table)
+    entry_column = quote_identifier(tag_join.entry_column)
+    tag_column = quote_identifier(tag_join.tag_column)
     rows = conn.execute(
         f"""
         SELECT t.ZNAME
-        FROM Z_17TAGS et
-        JOIN ZTAG t ON t.Z_PK = et.{tag_join_column}
-        WHERE et.Z_17ENTRIES = ?
+        FROM {tag_table} et
+        JOIN ZTAG t ON t.Z_PK = et.{tag_column}
+        WHERE et.{entry_column} = ?
         ORDER BY lower(t.ZNAME)
         """,
         (entry_pk,),
@@ -167,7 +215,10 @@ def fetch_entries(
     sort: str,
 ) -> list[dict[str, Any]]:
     params: list[Any] = [month, day]
-    tag_join_column = get_tag_join_column(conn)
+    tag_join = get_tag_join_schema(conn)
+    tag_table = quote_identifier(tag_join.table)
+    entry_column = quote_identifier(tag_join.entry_column)
+    tag_column = quote_identifier(tag_join.tag_column)
     include_journal_sql, include_journal_params = build_in_clause("j.ZNAME", include_journals)
     exclude_journal_sql, exclude_journal_params = build_in_clause(
         "j.ZNAME", exclude_journals, negate=True
@@ -181,9 +232,9 @@ def fetch_entries(
         tag_filter_sql += f"""
           AND NOT EXISTS (
             SELECT 1
-            FROM Z_17TAGS xt
-            JOIN ZTAG x ON x.Z_PK = xt.{tag_join_column}
-            WHERE xt.Z_17ENTRIES = e.Z_PK
+            FROM {tag_table} xt
+            JOIN ZTAG x ON x.Z_PK = xt.{tag_column}
+            WHERE xt.{entry_column} = e.Z_PK
               AND x.ZNAME IN ({excluded_tag_placeholders})
           )
         """
@@ -196,9 +247,9 @@ def fetch_entries(
         tag_filter_sql += f"""
           AND (
             SELECT count(DISTINCT it.ZNAME)
-            FROM Z_17TAGS ixt
-            JOIN ZTAG it ON it.Z_PK = ixt.{tag_join_column}
-            WHERE ixt.Z_17ENTRIES = e.Z_PK
+            FROM {tag_table} ixt
+            JOIN ZTAG it ON it.Z_PK = ixt.{tag_column}
+            WHERE ixt.{entry_column} = e.Z_PK
               AND it.ZNAME IN ({included_tag_placeholders})
           ) {comparator} ?
         """
@@ -256,7 +307,7 @@ def fetch_entries(
                 "journal": row["journal_name"],
                 "text": text,
                 "rich_text_json_empty": not bool(row["rich_text_json"]),
-                "tags": fetch_tags(conn, row["entry_pk"], tag_join_column),
+                "tags": fetch_tags(conn, row["entry_pk"], tag_join),
                 "attachments": fetch_attachments(conn, row["entry_pk"]),
                 "day_one_url": f"dayone://view?entryId={entry_id}",
             }
